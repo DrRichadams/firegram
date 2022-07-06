@@ -1,6 +1,17 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getStorage, ref } from "firebase/storage"
+import { 
+    getFirestore, 
+    collection, 
+    getDocs, 
+    addDoc, 
+    doc, 
+    setDoc, 
+    Timestamp, 
+    updateDoc,
+    serverTimestamp
+   } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,13 +28,45 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
+const storageRef = ref(storage);
+
+const mountainsRef = ref(storage, 'mountains.jpg');
 
 async function getCities(db) {
-    const citiesCol = collection(db, 'cities');
-    const citySnapshot = await getDocs(citiesCol);
+    // const citiesCol = collection(db, 'cities');
+    const citySnapshot = await getDocs(collection(db, 'cities'));
+    console.log(citySnapshot)
     const cityList = citySnapshot.docs.map(doc => doc.data());
     return cityList;
+}
+
+export const addSome = async (city) => {
+  try {
+    const docRef = await addDoc(collection(db, "cities"), {
+      name: city,
+    });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+  
+}
+
+export const setSome = async (city) => {
+  await setDoc(doc(db, "cities", "9QOVzdTp7kdWBfQXCPls"), {
+    name: city,
+    time: Timestamp.fromDate(new Date("December 10, 1815")),
+      // time: Timestamp.Date(),
+  }, { merge: true })
+}
+
+export const updateSome = async (update) => {
+  await updateDoc(doc(db, "cities", "9QOVzdTp7kdWBfQXCPls"), {
+      minister: update,
+      time: serverTimestamp()
+  })
 }
 
 export const cityData = getCities(db)

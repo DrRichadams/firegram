@@ -1,13 +1,12 @@
 import React from 'react';
 import Title from './comps/Title';
-import { cityData } from './firebase';
+import UploadForm from './comps/UploadForm';
 
 function App() {
-  
-  cityData.then(res => console.log(res))
   return (
     <div className="App">
       <Title/>
+      <UploadForm />
     </div>
   );
 }
