@@ -39,7 +39,13 @@ async function getCities(db) {
     const citySnapshot = await getDocs(collection(db, 'cities'));
     console.log(citySnapshot)
     const cityList = citySnapshot.docs.map(doc => doc.data());
-    return cityList;
+    // .orderBy('createdAt', 'desc')
+    let documents = [];
+    const cities = citySnapshot.docs.forEach(doc => {
+      documents.push({...doc.data(), id: doc.id})
+    });
+    // return cityList;
+    return documents;
 }
 
 export const addSome = async (city) => {
